@@ -1,0 +1,22 @@
+name: Build Firmware
+
+on: [push, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: qmk/action-setup@v1
+
+      - name: Build iris firmware
+        env:
+          KEYMAP_DIR: ${{ github.workspace }}/keyboards
+        run: qmk compile -kb keebio/iris/rev4 -km jackson --keymap-dir "$KEYMAP_DIR"
+
+      - name: Upload firmware
+        uses: actions/upload-artifact@v4
+        with:
+          name: iris-firmware
+          path: "*.hex"
